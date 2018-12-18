@@ -5,6 +5,9 @@
 
 import pychrome
 import urlparse
+import threading
+from lib.core.data import paths,th,logger
+from lib.controller.engine import output2file
 
 # 环境配置:
 # 	本地配置chrome的headless，执行如下命令:
@@ -47,26 +50,30 @@ def subdomin_finder_by_google(target):
 
 		url="https://www.google.com/search?q={}".format(target)
 		url=url+"&start={}".format(step)
-		print "step:",step
+		stepinfo="step:"+str(step)
+		logger.info(stepinfo)
 
-		# call method with timeout
-		tab.Page.navigate(url=url, _timeout=5)
-		tab.wait(5)
+		try:
+			# call method with timeout
+			tab.Page.navigate(url=url, _timeout=5)
+			tab.wait(5)
 
-		exp='document.getElementsByClassName("r").length'
-		length= tab.Runtime.evaluate(expression=exp)		
+			exp='document.getElementsByClassName("r").length'
+			length= tab.Runtime.evaluate(expression=exp)		
 
-		# google就看报不报错，报错了的话document.getElementsByClassName("r").length是为0的
-		if length['result']['value']==0:
-			break
+			# google就看报不报错，报错了的话document.getElementsByClassName("r").length是为0的
+			if length['result']['value']==0:
+				break
 
-		#从每一页上抓取url
-		for l in range(0,length['result']['value']):
-			# tab.wait(1)
-			exp1='document.getElementsByClassName("r")[{}].getElementsByTagName("a")[0].href'.format(l)
-			res1= tab.Runtime.evaluate(expression=exp1)
-			# print res1['result']['value']
-			subdomins.append(res1['result']['value'])
+			#从每一页上抓取url
+			for l in range(0,length['result']['value']):
+				# tab.wait(1)
+				exp1='document.getElementsByClassName("r")[{}].getElementsByTagName("a")[0].href'.format(l)
+				res1= tab.Runtime.evaluate(expression=exp1)
+				# print res1['result']['value']
+				subdomins.append(res1['result']['value'])
+		except:
+			pass
 
 	tab.stop()
 	browser.close_tab(tab)
@@ -81,7 +88,9 @@ def poc(target):
 			tmp.append(url.scheme+"://"+url.netloc)
 	subdomins=list(set(tmp))
 	if subdomins:
-		# for s in subdomins:
-		# 	print s
+		for s in subdomins:
+			s="=>"+s
+			output2file(s.replace("=>",""))
+			logger.success(s)
 		return True
 	return False

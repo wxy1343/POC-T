@@ -2,10 +2,13 @@
 # @Author: zeroyu
 # @Date:   2018-12-15 23:12:09
 # @Last Modified by:   zeroyu
-# @Last Modified time: 2018-12-15 23:26:50
+# @Last Modified time: 2018-12-18 12:51:34
 
 import pychrome
 import urlparse
+import threading
+from lib.core.data import paths,th,logger
+from lib.controller.engine import output2file
 
 
 # 环境配置:
@@ -51,7 +54,8 @@ def subdomin_finder_by_bing(target):
 
 		url="https://www.bing.com/search?q={}".format(target)
 		url=url+"&first={}".format(step)
-		print "step:",step
+		stepinfo="step:"+str(step)
+		logger.info(stepinfo)
 
 		try:
 			# call method with timeout
@@ -61,14 +65,19 @@ def subdomin_finder_by_bing(target):
 			exp='document.getElementsByClassName("b_algo").length'
 			length= tab.Runtime.evaluate(expression=exp)
 
+			if length['result']['value']==0:
+				break
+	
 			#从每一页上抓取url
 			for l in range(0,length['result']['value']):
 				exp1='document.getElementsByClassName("b_algo")[{}].getElementsByTagName("a")[0].href'.format(l)
 				res1= tab.Runtime.evaluate(expression=exp1)
 				# print res1['result']['value']
 				subdomins.append(res1['result']['value'])
+
 		except:
 			pass
+
 
 	tab.stop()
 	browser.close_tab(tab)
@@ -82,7 +91,9 @@ def poc(target):
 		tmp.append(url.scheme+"://"+url.netloc)
 	subdomins=list(set(tmp))
 	if subdomins:
-		# for s in subdomins:
-		# 	print s
+		for s in subdomins:
+			s="=>"+s
+			output2file(s.replace("=>",""))
+			logger.success(s)
 		return True
 	return False
