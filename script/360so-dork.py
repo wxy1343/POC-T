@@ -2,12 +2,14 @@
 # @Author: zeroyu
 # @Date:   2018-12-17 22:15:01
 # @Last Modified by:   zeroyu
-# @Last Modified time: 2018-12-17 22:44:49
+# @Last Modified time: 2018-12-18 12:31:36
 
 
 import pychrome
 import urlparse
-from lib.core.data import logger
+import threading
+from lib.core.data import paths,th,logger
+from lib.controller.engine import output2file
 
 # 环境配置:
 # 	本地配置chrome的headless，执行如下命令:
@@ -18,8 +20,7 @@ from lib.core.data import logger
 # 	$ docker pull fate0/headless-chrome
 # 	$ docker run -it --rm --cap-add=SYS_ADMIN -p9222:9222 fate0/headless-chrome
 
-# 	PS:使用google插件的时候打开ss就好
-
+# 	PS:使用google-dork的时候打开ss就好
 
 # 使用说明:
 # 	对目标使用google dork语法，程序会返回抓取的域名
@@ -88,10 +89,12 @@ def poc(target):
 	for sub in subdomins:
 		url=urlparse.urlparse(sub)
 		tmp.append(url.scheme+"://"+url.netloc)
+	# 去重
 	subdomins=list(set(tmp))
 	if subdomins:
 		for s in subdomins:
 			s="=>"+s
+			output2file(s.replace("=>",""))
 			logger.success(s)
 		return True
 	return False
