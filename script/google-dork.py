@@ -50,8 +50,8 @@ def subdomin_finder_by_google(target):
 
 		url="https://www.google.com/search?q={}".format(target)
 		url=url+"&start={}".format(step)
-		stepinfo="step:"+str(step)
-		logger.info(stepinfo)
+		# stepinfo="step:"+str(step)
+		# logger.info(stepinfo)
 
 		try:
 			# call method with timeout
@@ -70,7 +70,7 @@ def subdomin_finder_by_google(target):
 				# tab.wait(1)
 				exp1='document.getElementsByClassName("r")[{}].getElementsByTagName("a")[0].href'.format(l)
 				res1= tab.Runtime.evaluate(expression=exp1)
-				# print res1['result']['value']
+				logger.info(res1['result']['value'])
 				subdomins.append(res1['result']['value'])
 		except:
 			pass

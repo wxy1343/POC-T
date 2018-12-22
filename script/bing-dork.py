@@ -2,7 +2,7 @@
 # @Author: zeroyu
 # @Date:   2018-12-15 23:12:09
 # @Last Modified by:   zeroyu
-# @Last Modified time: 2018-12-18 12:51:34
+# @Last Modified time: 2018-12-22 16:59:27
 
 import pychrome
 import urlparse
@@ -54,8 +54,8 @@ def subdomin_finder_by_bing(target):
 
 		url="https://www.bing.com/search?q={}".format(target)
 		url=url+"&first={}".format(step)
-		stepinfo="step:"+str(step)
-		logger.info(stepinfo)
+		# stepinfo="step:"+str(step)
+		# logger.info(stepinfo)
 
 		try:
 			# call method with timeout
@@ -72,7 +72,7 @@ def subdomin_finder_by_bing(target):
 			for l in range(0,length['result']['value']):
 				exp1='document.getElementsByClassName("b_algo")[{}].getElementsByTagName("a")[0].href'.format(l)
 				res1= tab.Runtime.evaluate(expression=exp1)
-				# print res1['result']['value']
+				logger.info(res1['result']['value'])
 				subdomins.append(res1['result']['value'])
 
 		except:

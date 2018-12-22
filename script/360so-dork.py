@@ -2,7 +2,7 @@
 # @Author: zeroyu
 # @Date:   2018-12-17 22:15:01
 # @Last Modified by:   zeroyu
-# @Last Modified time: 2018-12-18 12:38:55
+# @Last Modified time: 2018-12-22 17:03:30
 
 
 import pychrome
@@ -24,10 +24,10 @@ from lib.controller.engine import output2file
 
 # 使用说明:
 # 	对目标使用google dork语法，程序会返回抓取的域名
-# 	python POC-T.py -iS "site:test.com" -s test.py -eG
+# 	python POC-T.py -iS "site:test.com" -s test.py
 # 	默认对域名做了去重输出，根据需要可以修改script
 
-def subdomin_finder_by_google(target):
+def subdomin_finder_by_360so(target):
 
 	# create a browser instance
 	browser = pychrome.Browser(url="http://127.0.0.1:9222")
@@ -50,10 +50,10 @@ def subdomin_finder_by_google(target):
 
 	while(1):
 
-		url="https://www.so.com/s?q=site:{}".format(target)
+		url="https://www.so.com/s?q={}".format(target)
 		url=url+"&pn={}".format(step)
-		stepinfo="step:"+str(step)
-		logger.info(stepinfo)
+		# stepinfo="step:"+str(step)
+		# logger.info(stepinfo)
 		step=step+1
 
 
@@ -74,7 +74,7 @@ def subdomin_finder_by_google(target):
 				# tab.wait(1)
 				exp1='document.getElementsByClassName("res-title")[{}].getElementsByTagName("a")[0].href'.format(l)
 				res1= tab.Runtime.evaluate(expression=exp1)
-				# print res1['result']['value']
+				logger.info(res1['result']['value'])
 				subdomins.append(res1['result']['value'])
 		except:
 			pass
@@ -84,7 +84,7 @@ def subdomin_finder_by_google(target):
 	return subdomins
 
 def poc(target):
-	subdomins=subdomin_finder_by_google(target)
+	subdomins=subdomin_finder_by_360so(target)
 	tmp=[]
 	for sub in subdomins:
 		url=urlparse.urlparse(sub)
