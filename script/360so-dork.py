@@ -1,7 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# project = https://github.com/Xyntax/POC-T
-# author = z3r0yu
+# @Author: zeroyu
+# @Date:   2018-12-17 22:15:01
+# @Last Modified by:   zeroyu
+# @Last Modified time: 2018-12-22 17:03:30
+
 
 import pychrome
 import urlparse
@@ -18,14 +20,14 @@ from lib.controller.engine import output2file
 # 	$ docker pull fate0/headless-chrome
 # 	$ docker run -it --rm --cap-add=SYS_ADMIN -p9222:9222 fate0/headless-chrome
 
-# 	PS:使用google插件的时候打开ss就好
-
+# 	PS:使用google-dork的时候打开ss就好
 
 # 使用说明:
 # 	对目标使用google dork语法，程序会返回抓取的域名
-# 	python POC-T.py -iS "site:test.com" -s test.py -eG
+# 	python POC-T.py -iS "site:test.com" -s test.py
+# 	默认对域名做了去重输出，根据需要可以修改script
 
-def subdomin_finder_by_google(target):
+def subdomin_finder_by_360so(target):
 
 	# create a browser instance
 	browser = pychrome.Browser(url="http://127.0.0.1:9222")
@@ -42,33 +44,35 @@ def subdomin_finder_by_google(target):
 	tab.Network.enable()
 	tab.Runtime.enable()
 
-	start=1000
+	step=1
 
 	subdomins=[]
 
-	for step in range(0,start+10,10):
+	while(1):
 
-		url="https://www.google.com/search?q={}".format(target)
-		url=url+"&start={}".format(step)
+		url="https://www.so.com/s?q={}".format(target)
+		url=url+"&pn={}".format(step)
 		# stepinfo="step:"+str(step)
 		# logger.info(stepinfo)
+		step=step+1
+
 
 		try:
 			# call method with timeout
 			tab.Page.navigate(url=url, _timeout=5)
 			tab.wait(5)
 
-			exp='document.getElementsByClassName("r").length'
+			exp='document.getElementsByClassName("res-title").length'
 			length= tab.Runtime.evaluate(expression=exp)		
 
-			# google就看报不报错，报错了的话document.getElementsByClassName("r").length是为0的
+			# 360so就看报不报错，报错了的话document.getElementsByClassName("res-title").length是为0的
 			if length['result']['value']==0:
 				break
 
 			#从每一页上抓取url
 			for l in range(0,length['result']['value']):
 				# tab.wait(1)
-				exp1='document.getElementsByClassName("r")[{}].getElementsByTagName("a")[0].href'.format(l)
+				exp1='document.getElementsByClassName("res-title")[{}].getElementsByTagName("a")[0].href'.format(l)
 				res1= tab.Runtime.evaluate(expression=exp1)
 				logger.info(res1['result']['value'])
 				subdomins.append(res1['result']['value'])
@@ -80,12 +84,12 @@ def subdomin_finder_by_google(target):
 	return subdomins
 
 def poc(target):
-	subdomins=subdomin_finder_by_google(target)
+	subdomins=subdomin_finder_by_360so(target)
 	tmp=[]
 	for sub in subdomins:
 		url=urlparse.urlparse(sub)
-		if url.scheme+"://"+url.netloc != 'https://www.google.com':
-			tmp.append(url.scheme+"://"+url.netloc)
+		tmp.append(url.scheme+"://"+url.netloc)
+	# 去重
 	subdomins=list(set(tmp))
 	if subdomins:
 		for s in subdomins:
