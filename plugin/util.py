@@ -9,7 +9,11 @@ import requests
 import socket
 import re
 from string import ascii_lowercase, digits
-from urlparse import urlparse
+
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 
 def randomString(length=8):
@@ -105,7 +109,7 @@ def IP2domain(base, timeout=3):
                              'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'},
                          timeout=timeout
                          ).content
-        p = re.compile(r'<cite>(.*?)</cite>')
+        p = re.compile(br'<cite>(.*?)</cite>')
         l = re.findall(p, c)
         for each in l:
             domain = each.split('://')[-1].split('/')[0]

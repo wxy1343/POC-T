@@ -12,6 +12,7 @@ from lib.core.common import dataToStdout
 from lib.utils.console import getTerminalSize
 from lib.utils.versioncheck import PYVERSION
 from lib.core.enums import POC_RESULT_STATUS, ENGINE_MODE_STATUS
+from six.moves import xrange
 
 
 def initEngine():

@@ -7,9 +7,12 @@
 redis getshell expliot (ssh authorized_keys)
 
 """
+import io
 
 import redis
 import paramiko
+from paramiko.pkey import PKey
+
 from plugin.util import host2IP
 from plugin.util import randomString
 from plugin.util import checkPortTcp
@@ -54,10 +57,10 @@ def testConnect(ip, port=22):
     try:
         s = paramiko.SSHClient()
         s.load_system_host_keys()
-        s.connect(ip, port, username='root', pkey=private_key, timeout=10)
+        s.connect(ip, port, username='root', pkey=PKey.from_private_key(io.StringIO(private_key)), timeout=10)
         s.close()
         return True
-    except Exception, e:
+    except Exception as e:
         if type(e) == SSHException:
             return True
         return False

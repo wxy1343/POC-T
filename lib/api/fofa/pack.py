@@ -9,6 +9,11 @@ from lib.utils.config import ConfigFileParser
 from lib.core.common import getSafeExString
 import getpass
 import urllib
+
+if sys.version.startswith('3'):
+    from urllib.request import urlopen
+
+    urllib.urlopen = urlopen
 import base64
 import json
 
@@ -20,7 +25,7 @@ def check(email, key):
             response = urllib.urlopen(auth_url)
             if response.code == 200:
                 return True
-        except Exception, e:
+        except Exception as e:
             # logger.error(e)
             return False
     return False
@@ -41,7 +46,7 @@ def FofaSearch(query, limit=100, offset=0):  # TODO 付费获取结果的功能�
         logger.warning(msg)
         msg = 'Please input your FoFa Email and API Key below.'
         logger.info(msg)
-        email = raw_input("Fofa Email: ").strip()
+        email = input("Fofa Email: ").strip()
         key = getpass.getpass(prompt='Fofa API Key: ').strip()
         if not check(email, key):
             msg = 'Fofa API authorization failed, Please re-run it and enter a valid key.'
@@ -60,7 +65,7 @@ def FofaSearch(query, limit=100, offset=0):  # TODO 付费获取结果的功能�
                 result.append(item[0])
             if resp.get('size') >= 100:
                 logger.info("{0} items found! just 100 returned....".format(resp.get('size')))
-    except Exception, e:
+    except Exception as e:
         sys.exit(logger.error(getSafeExString(e)))
     finally:
         return result

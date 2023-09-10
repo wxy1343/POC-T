@@ -41,15 +41,15 @@ def update():
             pollProcess(process, True)
             stdout, stderr = process.communicate()
             success = not process.returncode
-        except (IOError, OSError), ex:
+        except (IOError, OSError) as ex:
             success = False
             stderr = getSafeExString(ex)
 
         if success:
             _ = getRevisionNumber()
-            logger.info("%s the latest revision '%s'" % ("already at" if "Already" in stdout else "updated to", _))
+            logger.info("%s the latest revision '%s'" % ("already at" if b"Already" in stdout else "updated to", _))
         else:
-            if "Not a git repository" in stderr:
+            if b"Not a git repository" in stderr:
                 errMsg = "not a valid git repository. Please checkout the 'Xyntax/POC-T' repository "
                 errMsg += "from GitHub (e.g. 'git clone https://github.com/Xyntax/POC-T.git POC-T')"
                 logger.error(errMsg)

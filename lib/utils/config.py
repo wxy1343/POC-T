@@ -3,7 +3,10 @@
 # project = https://github.com/Xyntax/POC-T
 # author = i@cdxy.me
 
-import ConfigParser
+try:
+    import ConfigParser
+except ImportError:
+    import configparser as ConfigParser
 from lib.core.data import paths, logger
 from lib.core.common import getSafeExString
 
@@ -15,7 +18,7 @@ class ConfigFileParser:
             cf = ConfigParser.ConfigParser()
             cf.read(paths.CONFIG_PATH)
             return cf.get(section=section, option=option)
-        except ConfigParser.NoOptionError, e:
+        except ConfigParser.NoOptionError as e:
             logger.warning('Missing essential options, please check your config-file.')
             logger.error(getSafeExString(e))
             return ''
@@ -48,7 +51,7 @@ class ConfigFileParser:
         return self._get_option('google', 'search_engine')
 
     def FofaEmail(self):
-        return self._get_option('fofa','email')
+        return self._get_option('fofa', 'email')
 
     def FofaKey(self):
-        return self._get_option('fofa','api_key')
+        return self._get_option('fofa', 'api_key')

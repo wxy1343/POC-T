@@ -3,7 +3,10 @@
 # project = https://github.com/Xyntax/POC-T
 # author = i@cdxy.me
 
-import urlparse
+try:
+    import urllib.parse as urlparse
+except ImportError:
+    import urlparse
 
 
 def get_domain(url):
@@ -53,7 +56,7 @@ def iterate_path(ori_str):
 
 if __name__ == '__main__':
     url = 'http://cdxy.me:80/cdsa/cda/aaa.jsp?id=2#'
-    print urlparse.urlparse(url)
-    print get_domain(url)
+    print(urlparse.urlparse(url))
+    print(get_domain(url))
     for each in iterate_path(url):
-        print each
+        print(each)

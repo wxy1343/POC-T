@@ -28,7 +28,7 @@ def poc(url):
         s.send(payload)
         recvdata = s.recv(1024)
         s.close()
-        if recvdata and 'redis_version' in recvdata:
+        if recvdata and b'redis_version' in recvdata:
             return True
     except Exception:
         pass

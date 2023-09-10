@@ -14,10 +14,10 @@ Usage:
         requests.get('http://' + a, timeout=1)
     except Exception:
         pass
-    print c.verifyDNS(delay=0)
-    print c.verifyHTTP(delay=0)
-    print c.getDnsRecord(delay=0)
-    print c.getHttpRecord(delay=0)
+    print(c.verifyDNS(delay=0))
+    print(c.verifyHTTP(delay=0))
+    print(c.getDnsRecord(delay=0))
+    print(c.getHttpRecord(delay=0))
 """
 
 import random
@@ -57,10 +57,10 @@ class CloudEye:
         return requests.post(api_base).content
 
     def verifyDNS(self, delay=2):
-        return 'dnslog.info' in self.getDnsRecord(delay)
+        return b'dnslog.info' in self.getDnsRecord(delay)
 
     def verifyHTTP(self, delay=2):
-        return 'dnslog.info' in self.getHttpRecord(delay)
+        return b'dnslog.info' in self.getHttpRecord(delay)
 
 
 def queryDnsRecord(domain, delay=2):

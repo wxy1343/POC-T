@@ -10,6 +10,10 @@ getTerminalSize()
 """
 
 import os
+import sys
+
+if sys.version.startswith('3'):
+    env = os.environ
 
 __all__ = ['getTerminalSize']
 
@@ -26,7 +30,7 @@ def getTerminalSize():
     if current_os == 'Linux' or current_os == 'Darwin' or current_os.startswith('CYGWIN'):
         tuple_xy = _getTerminalSize_linux()
     if tuple_xy is None:
-        print "default"
+        print("default")
         tuple_xy = (80, 25)  # default value
     return tuple_xy
 
@@ -99,4 +103,4 @@ def _getTerminalSize_linux():
 
 if __name__ == "__main__":
     sizex, sizey = getTerminalSize()
-    print  'width =', sizex, 'height =', sizey
+    print('width =', sizex, 'height =', sizey)

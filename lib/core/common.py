@@ -86,7 +86,7 @@ def dataToStdout(data, bold=False):
         if conf.ENGINE is ENGINE_MODE_STATUS.THREAD:
             logging._acquireLock()
 
-        if isinstance(data, unicode):
+        if isinstance(data, str):
             message = stdoutencode(data)
         else:
             message = data
@@ -133,11 +133,11 @@ def pollProcess(process, suppress_errors=False):
         if returncode is not None:
             if not suppress_errors:
                 if returncode == 0:
-                    print " done\n"
+                    print(" done\n")
                 elif returncode < 0:
-                    print " process terminated by signal %d\n" % returncode
+                    print(" process terminated by signal %d\n" % returncode)
                 elif returncode > 0:
-                    print " quit unexpectedly with return code %d\n" % returncode
+                    print(" quit unexpectedly with return code %d\n" % returncode)
             break
 
 
@@ -175,23 +175,22 @@ def getUnicode(value, encoding=None, noneToNull=False):
         value = list(getUnicode(_, encoding, noneToNull) for _ in value)
         return value
 
-    if isinstance(value, unicode):
+    if isinstance(value, str):
         return value
-    elif isinstance(value, basestring):
+    elif isinstance(value, bytes):
         while True:
             try:
-                return unicode(value, encoding or UNICODE_ENCODING)
-            except UnicodeDecodeError, ex:
+                return value.decode(encoding or UNICODE_ENCODING)
+            except UnicodeDecodeError as ex:
                 try:
-                    return unicode(value, UNICODE_ENCODING)
-                except Exception:
-                    value = value[:ex.start] + "".join(
-                        INVALID_UNICODE_CHAR_FORMAT % ord(_) for _ in value[ex.start:ex.end]) + value[ex.end:]
+                    return value.decode(UNICODE_ENCODING)
+                except UnicodeDecodeError:
+                    value = value[:ex.start] + value[ex.start:ex.end].hex().encode() + value[ex.end:]
     else:
         try:
-            return unicode(value)
+            return value.decode()
         except UnicodeDecodeError:
-            return unicode(str(value), errors="ignore")  # encoding ignored for non-basestring instances
+            return str(value)  # encoding ignored for non-basestring instances
 
 
 def isListLike(value):
@@ -256,7 +255,7 @@ def getFileItems(filename, commentPrefix='#', unicode_=True, lowercase=False, un
                     else:
                         retVal.append(line)
 
-    except (IOError, OSError, MemoryError), ex:
+    except (IOError, OSError, MemoryError) as ex:
         errMsg = "something went wrong while trying "
         errMsg += "to read the content of file '%s' ('%s')" % (filename, ex)
         raise ToolkitSystemException(errMsg)

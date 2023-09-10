@@ -23,7 +23,7 @@ def stdoutencode(data):
         if IS_WIN:
             output = data.encode(sys.stdout.encoding, "replace")
 
-            if '?' in output and '?' not in data:
+            if b'?' in output and '?' not in data:
                 warnMsg = "cannot properly display Unicode characters "
                 warnMsg += "inside Windows OS command prompt "
                 warnMsg += "(http://bugs.python.org/issue1602). All "
@@ -39,4 +39,4 @@ def stdoutencode(data):
     except Exception:
         retVal = data.encode(UNICODE_ENCODING) if isinstance(data, unicode) else data
 
-    return retVal
+    return retVal.decode(UNICODE_ENCODING)

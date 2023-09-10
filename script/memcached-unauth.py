@@ -38,11 +38,11 @@ def poc(url):
         s.send(payload)
         recvdata = s.recv(2048)  # response larger than 1024
         s.close()
-        if recvdata and 'STAT version' in recvdata:
+        if recvdata and b'STAT version' in recvdata:
             ans_str = url
-            ans_str += ' | version:' + ''.join(re.findall(r'version\s(.*?)\s', recvdata))
-            ans_str += ' | total_items:' + ''.join(re.findall(r'total_items\s(\d+)\s', recvdata))
+            ans_str += b' | version:' + ''.join(re.findall(rb'version\s(.*?)\s', recvdata))
+            ans_str += b' | total_items:' + ''.join(re.findall(rb'total_items\s(\d+)\s', recvdata))
             return ans_str
-    except Exception, e:
+    except Exception as e:
         pass
     return False
