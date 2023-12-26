@@ -20,7 +20,7 @@ import json
 
 def check(email, key):
     if email and key:
-        auth_url = "https://fofa.so/api/v1/info/my?email={0}&key={1}".format(email, key)
+        auth_url = "https://fofa.info/api/v1/info/my?email={0}&key={1}".format(email, key)
         try:
             response = urllib.urlopen(auth_url)
             if response.code == 200:
@@ -54,17 +54,17 @@ def FofaSearch(query, limit=100, offset=0):  # TODO 付费获取结果的功能�
 
     query = base64.b64encode(query)
 
-    request = "https://fofa.so/api/v1/search/all?email={0}&key={1}&qbase64={2}".format(email, key, query)
+    request = "https://fofa.info/api/v1/search/all?email={0}&key={1}&qbase64={2}&size={3}&page={4}".format(email, key, query, limit, offset//limit+1)
     result = []
     try:
         response = urllib.urlopen(request)
         resp = response.readlines()[0]
         resp = json.loads(resp)
-        if resp["error"] is None:
+        if resp["error"] is False:
             for item in resp.get('results'):
                 result.append(item[0])
             if resp.get('size') >= 100:
-                logger.info("{0} items found! just 100 returned....".format(resp.get('size')))
+                logger.info("{0} items found! just {1} returned....".format(resp.get('size'), len(result)))
     except Exception as e:
         sys.exit(logger.error(getSafeExString(e)))
     finally:
